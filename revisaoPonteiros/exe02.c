@@ -19,9 +19,13 @@ El *criaElemento(int num){
     return no;
 }
 
-void insereElemento(El *no, El *inicio){
-    no->prox = inicio->prox;
-    inicio->prox = no;
+void insereElementoFinal(El *no, El *inicio){
+	El *aux = inicio;
+	while(aux->prox != NULL){
+		aux = aux->prox;
+	}
+	no->prox = aux->prox;
+   aux->prox = no;
 }
 
 El *buscaElemento(int num, El *inicio){
@@ -35,15 +39,17 @@ El *buscaElemento(int num, El *inicio){
 }
 
 void imprimeLista(El *inicio){
-    El *aux;
-    aux = inicio->prox;
+    if(inicio == NULL){
+		 printf(" ");
+	 }
+	El *aux = inicio->prox;
     while(aux!=NULL){
         printf("%i ", aux->num);
         aux = aux->prox;
     }
 }
 
-int deTras(El *inicio){
+void deTras(El *inicio){
     El *aux, *ante;
     aux = inicio->prox;
     if(aux->prox != NULL){
@@ -53,42 +59,33 @@ int deTras(El *inicio){
     }
     else{
         printf("%i", aux->num);
-        return 0;
     }
 }
-
-void removeDaLista(El *inicio, int num){
-    El *antecessor, *atual;
-    antecessor = inicio;
-    atual = inicio->prox;
-    
-    while(atual != NULL && atual->num != num){
-        antecessor = atual;
-        atual = atual->prox;
-    }
-    if(atual != NULL){
-        antecessor->prox = atual->prox;
-        free(atual);
-    }
-}
-
 
 int main(void) {
     
-    int i, num;
-    El *no;
+    int i;
+	int array[6] = {1, 5, 7, 9, 3, 6};
     El *inicio = criaLista();
-    
-    for(i=0;i<5;i++){
-        scanf("%i", &num);
-        El *no = criaElemento(num);
-        insereElemento(no, inicio);
+    El *segundoInicio = NULL;
+    for(i=0;i<6;i++){
+        El *no = criaElemento(array[i]);
+        insereElementoFinal(no, inicio);
     }
     
-
-    deTras(inicio);
-    printf("\n");
-    imprimeLista(inicio);
+	printf("Lista Original: ");
+	imprimeLista(inicio);
+	printf("\n");
+	printf("Lista Invertida: ");
+   deTras(inicio);
+   printf("\n");
+	printf("Lista Original: ");
+	imprimeLista(segundoInicio);
+	printf("\n");
+	printf("Lista Invertida: ");
+   deTras(segundoInicio);
+   printf("\n");
+    
 
    return 0;
 }
