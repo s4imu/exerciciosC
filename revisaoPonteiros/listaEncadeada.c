@@ -51,21 +51,11 @@ void imprimeLista(El *inicio){
     }
 }
 
-int deTras(El *inicio){
-    El *aux, *ante;
-    aux = inicio->prox;
-    if(aux->prox != NULL){
-        ante = aux;
-        deTras(aux);
-        printf(" %i", ante->num);
-    }
-    else{
-        printf("%i", aux->num);
+
+int removeDaLista(El *inicio, int num){
+    if(inicio == NULL){
         return 0;
     }
-}
-
-void removeDaLista(El *inicio, int num){
     El *antecessor, *atual;
     antecessor = inicio;
     atual = inicio->prox;
@@ -78,25 +68,15 @@ void removeDaLista(El *inicio, int num){
         antecessor->prox = atual->prox;
         free(atual);
     }
+    if(atual == NULL) {
+        return 0;
+    }
 }
 
 
 int main(void) {
     
-    int i, num;
-    El *no;
-    El *inicio = criaLista();
-    
-    for(i=0;i<5;i++){
-        scanf("%i", &num);
-        El *no = criaElemento(num);
-        insereElemento(no, inicio);
-    }
-    
-
-    deTras(inicio);
-    printf("\n");
-    imprimeLista(inicio);
+   printf("Compilou");
 
    return 0;
 }

@@ -6,20 +6,27 @@ typedef struct elemento{
     struct elemento *prox;
 }El;
 
-El *criaLista(){
-    El *no = (El*)malloc (sizeof(El));
-    no->prox = NULL;
-    return no;
-}
-
 El *criaElemento(int num){
-    El *no = (El*)malloc (sizeof(El));
-    no->num = num;
-    no->prox = NULL;
+   El *no = (El*)malloc (sizeof(El));
+	if(no != NULL) {
+		no->num = num;
+    	no->prox = NULL;
+	}
     return no;
 }
 
-void insereElementoFinal(El *no, El *inicio){
+El *criaLista(){
+   El *no = (El*)malloc (sizeof(El));
+	if(no != NULL){
+		no->prox = NULL;
+	}
+    return no;
+}
+
+int insereElementoFinal(El *no, El *inicio){
+	if(inicio == NULL){
+		return 0;
+	}
 	El *aux = inicio;
 	while(aux->prox != NULL){
 		aux = aux->prox;
@@ -28,19 +35,9 @@ void insereElementoFinal(El *no, El *inicio){
    aux->prox = no;
 }
 
-El *buscaElemento(int num, El *inicio){
-	if(inicio == NULL){
-		return NULL;
-	}
-	if(inicio->num == num){
-		return inicio;
-	}
-	return buscaElemento(num, inicio->prox);
-}
-
-void imprimeLista(El *inicio){
+int imprimeLista(El *inicio){
     if(inicio == NULL){
-		 printf(" ");
+		return 0;
 	 }
 	El *aux = inicio->prox;
     while(aux!=NULL){
@@ -49,9 +46,12 @@ void imprimeLista(El *inicio){
     }
 }
 
-void deTras(El *inicio){
-    El *aux, *ante;
-    aux = inicio->prox;
+int deTras(El *inicio){
+   if(inicio == 0){
+		return 0;
+	}
+	El *aux, *ante;
+   aux = inicio->prox;
     if(aux->prox != NULL){
         ante = aux;
         deTras(aux);
@@ -64,12 +64,12 @@ void deTras(El *inicio){
 
 int main(void) {
     
-    int i;
-	int array[6] = {1, 5, 7, 9, 3, 6};
+   int i, num;
     El *inicio = criaLista();
-    El *segundoInicio = NULL;
-    for(i=0;i<6;i++){
-        El *no = criaElemento(array[i]);
+	 El *segundoInicio = NULL; 
+    for(i=0;i<3;i++){
+		 scanf("%d", &num);
+        El *no = criaElemento(num);
         insereElementoFinal(no, inicio);
     }
     
@@ -85,7 +85,6 @@ int main(void) {
 	printf("Lista Invertida: ");
    deTras(segundoInicio);
    printf("\n");
-    
 
    return 0;
 }

@@ -15,7 +15,7 @@ El *criaElemento(int num){
     return no;
 }
 
-El *criaLista(){
+El *iniciaLista(){
     El *no = (El*)malloc (sizeof(El));
 	if(no != NULL){
 		no->prox = NULL;
@@ -23,7 +23,10 @@ El *criaLista(){
     return no;
 }
 
-void insereElemento(El *no, El *inicio){
+int insereElemento(El *no, El *inicio){
+	if(inicio == NULL){
+	    return 0;
+	}
 	El *aux = inicio;
 	while(aux->prox != NULL){
 		aux = aux->prox;
@@ -31,6 +34,20 @@ void insereElemento(El *no, El *inicio){
 	no->prox = aux->prox;
     aux->prox = no;
 }
+
+El *criaLista(){
+    El *inicio = iniciaLista();
+    int num;
+    scanf("%d", &num);
+    while(num != 0){
+        El *no = criaElemento(num);
+        insereElemento(no, inicio);
+        scanf("%d", &num);
+    }
+    
+    return inicio;
+}
+
 
 int buscaElemento(int num, El *inicio){
 	if(inicio == NULL){
@@ -42,7 +59,11 @@ int buscaElemento(int num, El *inicio){
 	return buscaElemento(num, inicio->prox);
 }
 
-void imprimeLista(El *inicio){
+
+int imprimeLista(El *inicio){
+    if(inicio == NULL){
+        return 0;
+    }
     El *aux;
     aux = inicio->prox;
     while(aux!=NULL){
@@ -51,54 +72,96 @@ void imprimeLista(El *inicio){
     }
 }
 
-void imprimeListaComZer0(El *inicio){
-    El *aux;
-    aux = inicio->prox;
-    while(aux->num!=0){
-        printf("%i ", aux->num);
-        aux = aux->prox;
+El *insercaoListaUniao(El *inicioLista, El *uniao){
+    if(inicioLista == NULL || uniao == NULL){
+        return NULL;
     }
+	int achou;
+	El* aux = inicioLista;
+    
+    while(aux != NULL){
+		achou = buscaElemento(aux->num,uniao);
+		if(achou == 1){
+			aux = aux->prox;
+		} 
+		if(achou == 0){
+		    El *no = criaElemento(aux->num);
+			insereElemento(no, uniao);
+			aux = aux->prox;
+		}
+	}
+	return uniao;
 }
 
-El *uniaoListas(El *inicioLista1, El *inicioLista2){
+
+El *insercaoListaIntersecao(El *inicioLista1, El *inicioLista2, El *intersecao){
+	if(inicioLista1 == NULL || inicioLista2 == NULL || intersecao == NULL){
+	    return NULL;
+	}
 	int achou;
-	El *uniao = criaLista();
-// 	receber o inicio da primeiraLista
 	El* aux = inicioLista1;
-	
-// 	laço para percorrrer a lista inteiro;
-	while(aux->num != 0){
-	    printf("Entrou\n");
-	   // verifica se o numero ja nao esta inserido na lista de uniao
-		achou = buscaElemento(aux->num,uniao);
-		printf("%i", achou);
-		if(achou == 1){
-		    // caso ache passa para o prox
-		    printf("Achou elemento %d na Lista Uniao", aux->num);
-			aux = aux->prox;
-		} else {
-		    // insercao na lista de uniao
-			insereElemento(aux, uniao);
-			aux = aux->prox;
+    
+    while(aux != NULL){
+		achou = buscaElemento(aux->num,inicioLista2);
+		if(achou == 0 || aux->num == 0){
+            aux = aux->prox;
 		}
+		else {
+            achou = buscaElemento(aux->num,intersecao);
+		    if(achou == 0){
+      		    El *no = criaElemento(aux->num);
+			    insereElemento(no, intersecao);
+			    aux = aux->prox;  
+		    }
+		    else {
+		        aux = aux->prox;
+		    }
+		} 
 	}
 	
-// 	a ideia é se repetir os mesmos passos para a lista 2
 	aux = inicioLista2;
-	
-	while(aux->num != 0){
-		printf("Entrou\n");
-		achou = buscaElemento(aux->num,uniao);
-		printf("%i", achou);
-		if(achou == 1){
-		    printf("Achou elemento %d na Lista Uniao", aux->num);
-			aux = aux->prox;
-		} else {
-			insereElemento(aux, uniao);
-			aux = aux->prox;
+	while(aux != NULL){
+		achou = buscaElemento(aux->num,inicioLista1);
+    	if(achou == 0 || aux->num == 0){
+            aux = aux->prox;
 		}
+		else {
+		    achou = buscaElemento(aux->num,intersecao);
+		    if(achou == 0){
+      		    El *no = criaElemento(aux->num);
+			    insereElemento(no, intersecao);
+			    aux = aux->prox;  
+		    }
+		    else {
+		        aux = aux->prox;
+		    }
+		} 
 	}
 	
+	return intersecao;
+}
+
+El *intersecaoListas(El *inicioLista1, El *inicioLista2){
+	if(inicioLista1 == NULL || inicioLista2 == NULL){
+	    return NULL;
+	}
+    El *intersecao = iniciaLista();
+    
+    intersecao = insercaoListaIntersecao(inicioLista1, inicioLista2, intersecao);
+
+	return intersecao;
+}
+
+
+El *uniaoListas(El *inicioLista1, El *inicioLista2){
+	if(inicioLista1 == NULL || inicioLista2 == NULL){
+	    return NULL;
+	}
+    El *uniao = iniciaLista();
+    
+    uniao = insercaoListaUniao(inicioLista1, uniao);
+    uniao = insercaoListaUniao(inicioLista2, uniao);
+
 	return uniao;
 }
 
@@ -106,29 +169,22 @@ int main(void) {
 	int i;
 	El *inicio1 = criaLista();
 	El *inicio2 = criaLista();
-	El *uniao;
+	El *uniao, *intersecao;
 	
-	int array1[3] = {10, 2, 0};
-	int array2[3] = {2, 1, 0};
-	
-	for(i=0;i<3;i++){
-		El *no1 = criaElemento(array1[i]);
-		El *no2 = criaElemento(array2[i]);
-		insereElemento(no1,inicio1);
-		insereElemento(no2,inicio2);
-	}
-	
-	uniao = uniaoListas(inicio1,inicio2);
+ 	uniao = uniaoListas(inicio1,inicio2);
+ 	intersecao = intersecaoListas(inicio1,inicio2);
 	
 	printf("Lista 1: ");
-	imprimeListaComZer0(inicio1);
+	imprimeLista(inicio1);
 	printf("\n");
 	printf("Lista 2: ");
-	imprimeListaComZer0(inicio2);
+	imprimeLista(inicio2);
 	printf("\n");
 	printf("Uniao: ");
 	imprimeLista(uniao);
 	printf("\n");
+	printf("Intersecao: ");
+	imprimeLista(intersecao);
+	printf("\n");
 	
-	 return 0;
-}
+	
